@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -12,11 +14,15 @@ class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(400))
+    date = db.Column(db.DateTime)
 
-    def __init__(self, title, body):
+    def __init__(self, title, body, date=None):
 
         self.title = title
         self.body = body
+        if date is None:
+            date = datetime.utcnow()
+        self.date = date
 
 @app.route('/')
 def index():
@@ -64,7 +70,7 @@ def blog():
             current_post = Blog.query.get(post_id)
             return render_template('current.html', post=current_post)
 
-    posts = Blog.query.all()
+    posts = Blog.query.order_by(desc(Blog.date)).all()
     return render_template('blog.html', title='My Blog', posts=posts)
 
 if __name__ == '__main__':
