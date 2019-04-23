@@ -59,7 +59,7 @@ def new_post():
             return render_template('newpost.html', title = 'New Post', post_title = post_title, post_body = post_body,
              title_error = title_error, body_error = body_error)
 
-    return render_template('newpost.html', title = 'New Post', post_title = 'Title')
+    return render_template('newpost.html', title = 'New Post')
 
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
